@@ -34,32 +34,32 @@ contract('Approval', function() {
     })
 
     describe('Address approval', function () {
-        it('owner can doApproval', async() => {
-            await truffleAssert.passes(ownerap.doApproval({from: owner1 }))            
+        it('owner can doApproval', async() => {            
+            await truffleAssert.passes(
+                ownerap.doApproval({from: owner1 }));         
         })
 
         it('nononwer cannont doApproval', async() => {
-            await truffleAssert.reverts(
-                ownerap.doApproval({from: nonowner1 }),
-                'address must be owner');
+            await truffleAssert.reverts(ownerap.doApproval({from: nonowner1 }), 'address must be owner');
         })
 
         it('get listApproval', async () => {           
-            result = await truffleAssert.passes(ownerap.listApproval())
+            result = await truffleAssert.passes(ownerap.listApproval())            
         })
     })
 
-    // describe('MinApproval change', function () {
-    //     it('change minApproval is valid', async() => {
-    //         var response = await ownerap.minApproval()
-    //         assert.equal(response, 1, 'less than minApproval')
-    //     })
+    describe('MinApproval', function () {
+        it('minApproval less than quantOwner', async() => {
+            await ownerap.doApproval({from: owner1 })
+            await truffleAssert.reverts(ownerap.changeMinApproval(0), 'minApproval must be equal or greater than quantOwner');
+        })
 
-    //     it('change minApproval is less than minimum', async() => {
-    //         var response = await ownerap.minApproval()
-    //         assert.reverts(response, 1, 'minApproval is more than minimum')
-    //     })
-    // })
+        it('minApproval equal or greater quantOwner', async() => {
+            await ownerap.doApproval({from: owner1 })
+            await truffleAssert.passes(ownerap.changeMinApproval(1)
+            );
+        })
+    })
 
     describe('Cancel approval', function() {
         it('cancel approval', async() => {

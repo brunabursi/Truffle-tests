@@ -51,7 +51,7 @@ contract Ownerap {
     event MinApprovalChanged(uint8 _minBefore, uint8 _minActual);
 
     function changeMinApproval(uint8 _minApproval) public onlyOwner onlyApproved {
-        require(_minApproval <= quantOwner, "minApproval must be equal or greater than quantOwner");
+        require(_minApproval >= quantOwner, "minApproval must be equal or greater than quantOwner");
         uint8 _minBefore = minApproval;
         minApproval = _minApproval;
         emit MinApprovalChanged(_minBefore, _minApproval);
