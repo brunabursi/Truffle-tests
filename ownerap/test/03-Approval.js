@@ -31,16 +31,13 @@ contract('Approval', function() {
             let result = await ownerap.checkApproval(owner1);
             assert.equal(result, 1, 'not returned an owner for approval');
         })
-    })
-
-    describe('Address approval', function () {
-        it('owner can doApproval', async() => {            
-            await truffleAssert.passes(
-                ownerap.doApproval({from: owner1 }));         
-        })
 
         it('nononwer cannont doApproval', async() => {
             await truffleAssert.reverts(ownerap.doApproval({from: nonowner1 }), 'address must be owner');
+        })
+
+        it('owner can doApproval', async() => {            
+            await truffleAssert.passes(ownerap.doApproval({from: owner1 }));         
         })
 
         it('get listApproval', async () => {           
@@ -62,9 +59,22 @@ contract('Approval', function() {
     })
 
     describe('Cancel approval', function() {
+        it('fail cancel approval by nonowner', async() => {
+            await truffleAssert.reverts(ownerap.cancelApproval({from: nonowner1 }), 'address must be owner');
+        })
+
+        it('fail cancel approval by isApproved', async() => {
+            await truffleAssert.reverts(ownerap.cancelApproval({from: owner1 }), 'address not approved yet');
+        })
+
         it('cancel approval', async() => {
             await truffleAssert.passes(ownerap.doApproval({from: owner1 }))
             await truffleAssert.passes(ownerap.cancelApproval({from: owner1 }))
+        })
+
+        it('reset all approval fail by nonowner', async() => {
+            await truffleAssert.passes(ownerap.doApproval({from: owner1 }))
+            await truffleAssert.reverts(ownerap.resetAllApproval({from: nonowner1 }), 'address must be owner')
         })
 
         it('reset all approval', async() => {

@@ -27,9 +27,9 @@ contract('Owners', function() {
 
     describe('Owner functions - add', function () {
         beforeEach('setup approval', async() => {
-                    await ownerap.doApproval({from: owner1 })
-                })
-        
+            await ownerap.doApproval({from: owner1 })
+        })
+
                 it('add owner exist failed', async() => {
                     await truffleAssert.reverts(ownerap.addOwner(owner1),'owner exists');
                 })
@@ -50,6 +50,20 @@ contract('Owners', function() {
             await truffleAssert.passes(ownerap.addOwner(owner2))
             await truffleAssert.passes(ownerap.doApproval({from: owner2 }))
             await truffleAssert.passes(ownerap.delOwner(owner2, {from: owner1}))
+        })
+
+        it('delete owner fails', async() => {
+            await truffleAssert.passes(ownerap.doApproval({from: owner1 }))
+            await truffleAssert.passes(ownerap.addOwner(owner2))
+            await truffleAssert.passes(ownerap.doApproval({from: owner2 }))
+            await truffleAssert.reverts(ownerap.delOwner(owner2, {from: nonowner1}), 'address must be owner')
+        })
+
+        it('owner cant del itself', async() => {
+            await truffleAssert.passes(ownerap.doApproval({from: owner1 }))
+            await truffleAssert.passes(ownerap.addOwner(owner2))
+            await truffleAssert.passes(ownerap.doApproval({from: owner2 }))
+            await truffleAssert.reverts(ownerap.delOwner(owner2, {from: owner2}), 'address can not remove yourself')
         })
     })
 })
