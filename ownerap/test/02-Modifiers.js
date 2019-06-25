@@ -27,14 +27,6 @@ contract('Modifiers', function() {
     })
 
     describe('Modifiers', function () {
-        // it('check if current approvals is minimum', async() => {
-        //     var response = await ownerap.arrayApproval()
-        //     console.log(arrayApproval)
 
-        //     var minimum = await ownerap.minApproval()
-        //     console.log(minimum)
-
-        //     assert.equal(response, minimum, 'current is less than minimum')  
-        // })
     });
 })
